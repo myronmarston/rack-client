@@ -1,13 +1,9 @@
 require 'rack'
 require 'rack/test'
 require 'forwardable'
-require 'action_dispatch/middleware/stack'
-require 'active_support'
-require 'active_support/core_ext/array/extract_options'
-require 'active_support/core_ext/string/inflections'
 
 module Rack
-  class Client
+  class Client < Rack::Builder
     VERSION = "0.2.3.pre"
 
     include Rack::Test::Methods
@@ -18,29 +14,16 @@ module Rack
       def_delegators :new, *HTTP_METHODS
     end
 
-    def initialize(*args, &block)
-      @stack = Stack.new(*args)
-      @stack.instance_eval(&block) if block_given?
-    end
-    attr_reader :stack
-
-    def call(env)
-      app.call(env)
+    def run(*args, &block)
+      @ran = true
+      super(*args, &block)
     end
 
-    def app
-      stack.app
+    def to_app(*args, &block)
+      run Rack::Client::HTTP unless @ran
+      super(*args, &block)
     end
-
-    class Stack < ActionDispatch::MiddlewareStack
-      def run(endpoint)
-        @endpoint = endpoint
-      end
-
-      def app
-        build(@endpoint || Rack::Client::HTTP)
-      end
-    end
+    alias app to_app
   end
 end
 

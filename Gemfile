@@ -1,7 +1,6 @@
 only :release do
   gem 'rack'
   gem 'rack-test'
-  gem 'halorgium-actionpack', '=3.0.pre'
 end
 
 only :test do

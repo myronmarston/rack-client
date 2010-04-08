@@ -1,16 +1,12 @@
-only :release do
-  gem 'rack'
-  gem 'rack-test'
-end
+gem 'rack'
+gem 'rack-test'
 
-only :test do
+group :test do
   gem 'rake'
-  gem 'sinatra', :require_as => 'sinatra/base'
-  gem 'rspec', :require_as => 'spec'
-  gem 'rack-contrib', :require_as => 'rack/contrib'
+  gem 'sinatra', :require => 'sinatra/base'
+  gem 'rspec', :require => 'spec'
+  gem 'rack-contrib', :require => 'rack/contrib'
   gem 'ruby-debug'
   gem 'bundler'
   gem 'webrat'
 end
-
-disable_system_gems

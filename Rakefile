@@ -2,7 +2,6 @@ require 'rake'
 require "rake/gempackagetask"
 require "rake/clean"
 require "spec/rake/spectask"
-require 'bundler'
 require File.expand_path("./lib/rack/client")
 
 Spec::Rake::SpecTask.new(:spec) do |t|
@@ -24,10 +23,10 @@ spec = Gem::Specification.new do |s|
   s.files             = %w[History.txt LICENSE README.textile Rakefile] + Dir["lib/**/*"] + Dir["demo/**/*"]
   s.test_files        = Dir["spec/**/*"]
 
-  manifest = Bundler::Dsl.load_gemfile(File.dirname(__FILE__) + '/Gemfile')
-  manifest.dependencies.each do |d|
-    next unless d.only && d.only.include?('release')
-    s.add_dependency(d.name, d.version)
+  require 'bundler'
+  manifest = Bundler.setup
+  manifest.dependencies_for(:default).each do |d|
+    s.add_dependency(d.name, d.version_requirement)
   end
 end
 

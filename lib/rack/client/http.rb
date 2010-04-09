@@ -10,37 +10,28 @@ class Rack::Client::HTTP
   end
 
   def run
-    case request.request_method
+    request_klass = case request.request_method
     when "HEAD"
-      head = Net::HTTP::Head.new(request.path, request_headers)
-      http.request(head) do |response|
-        return parse(response)
-      end
+      Net::HTTP::Head
     when "GET"
-      get = Net::HTTP::Get.new(request.path, request_headers)
-      http.request(get) do |response|
-        return parse(response)
-      end
+      Net::HTTP::Get
     when "POST"
-      post = Net::HTTP::Post.new(request.path, request_headers)
-      post.body = @env["rack.input"].read
-      http.request(post) do |response|
-        return parse(response)
-      end
+      Net::HTTP::Post
     when "PUT"
-      put = Net::HTTP::Put.new(request.path, request_headers)
-      put.body = @env["rack.input"].read
-      http.request(put) do |response|
-        return parse(response)
-      end
+      Net::HTTP::Put
     when "DELETE"
-      delete = Net::HTTP::Delete.new(request.path, request_headers)
-      http.request(delete) do |response|
-        return parse(response)
-      end
+      Net::HTTP::Delete
     else
       raise "Unsupported method: #{request.request_method.inspect}"
     end
+
+    request_object = request_klass.new(request.path, request_headers)
+
+    if %w( POST PUT ).include?(request.request_method)
+      request_object.body = @env["rack.input"].read
+    end
+
+    parse(http.request(request_object))
   end
 
   def https?

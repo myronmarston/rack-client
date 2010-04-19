@@ -12,7 +12,7 @@ end
 task :default  => :spec
 
 spec = Gem::Specification.new do |s|
-  s.name              = "rack-client"
+  s.name              = "myronmarston-rack-client"
   s.rubyforge_project = s.name
   s.version           = Rack::Client::VERSION
   s.author            = "Tim Carey-Smith"

@@ -4,7 +4,7 @@ require 'forwardable'
 
 module Rack
   class Client < Rack::Builder
-    VERSION = "0.2.3.myron"
+    VERSION = "0.2.4"
 
     include Rack::Test::Methods
     HTTP_METHODS = [:head, :get, :put, :post, :delete]
